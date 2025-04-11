@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -14,6 +16,9 @@ import (
 func main() {
 	logger := setupLogger()
 
+	if err := godotenv.Load(); err != nil {
+		log.Println(".env file not found")
+	}
 	cfg, err := config.Load()
 	if err != nil {
 		logger.Error("Failed to load config", err)
@@ -36,7 +41,12 @@ func main() {
 	}))
 	http.HandleFunc("/user/get/", server.AuthMiddleware(
 		h.MethodHandler(map[string]http.HandlerFunc{
-			http.MethodGet: h.Users(),
+			http.MethodGet: h.GetUserByID(),
+		})),
+	)
+	http.HandleFunc("/user/search/", server.AuthMiddleware(
+		h.MethodHandler(map[string]http.HandlerFunc{
+			http.MethodGet: h.UsersSearch(),
 		})),
 	)
 

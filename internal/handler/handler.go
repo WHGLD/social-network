@@ -10,6 +10,7 @@ import (
 type Storage interface {
 	CreateUser(user *model.User) error
 	GetUserByID(userID string) (*model.User, error)
+	UsersSearch(FirstName, SecondName string) ([]model.User, error)
 }
 
 type Handler struct {

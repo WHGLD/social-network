@@ -38,3 +38,10 @@ func (u *User) ToResponse() UserResponse {
 		City:       u.City,
 	}
 }
+
+func UsersTransform(users []User) (usersResponse []UserResponse) {
+	for _, user := range users {
+		usersResponse = append(usersResponse, user.ToResponse())
+	}
+	return
+}

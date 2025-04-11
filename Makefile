@@ -18,4 +18,11 @@ del:
 	@echo "Удаляем контейнеры..."
 	@docker-compose -f deployments/docker-compose.yaml down -v
 
+dev-up:
+	@docker-compose -f deployments/docker-compose.yaml --env-file .env up -d postgres migrate
 
+dev-down:
+	@docker-compose -f deployments/docker-compose.yaml down
+
+dev-run:
+	@go run cmd/social/main.go

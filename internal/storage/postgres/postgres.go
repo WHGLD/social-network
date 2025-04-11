@@ -58,3 +58,51 @@ func (s *Storage) GetUserByID(userID string) (*model.User, error) {
 	).Scan(&user.ID, &user.PasswordHash, &user.FirstName, &user.SecondName, &user.Birthday, &user.Sex, &user.Biography, &user.City)
 	return &user, err
 }
+
+func (s *Storage) UsersSearch(FirstName, SecondName string) ([]model.User, error) {
+	var users []model.User
+
+	query := `
+		SELECT
+			user_id,
+			password_hash,
+			first_name,
+			second_name,
+			birthday,
+			sex,
+			biography,
+			city
+		FROM users
+		WHERE first_name ILIKE $1 AND second_name ILIKE $2
+	`
+	firstParam := FirstName + "%"
+	secondParam := SecondName + "%"
+
+	rows, err := s.db.Query(query, firstParam, secondParam)
+	if err != nil {
+		return users, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user model.User
+		if err = rows.Scan(
+			&user.ID,
+			&user.PasswordHash,
+			&user.FirstName,
+			&user.SecondName,
+			&user.Birthday,
+			&user.Sex,
+			&user.Biography,
+			&user.City,
+		); err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return users, err
+	}
+
+	return users, nil
+}
