@@ -74,6 +74,7 @@ func (s *Storage) UsersSearch(FirstName, SecondName string) ([]model.User, error
 			city
 		FROM users
 		WHERE first_name ILIKE $1 AND second_name ILIKE $2
+		ORDER BY user_id DESC
 	`
 	firstParam := FirstName + "%"
 	secondParam := SecondName + "%"
